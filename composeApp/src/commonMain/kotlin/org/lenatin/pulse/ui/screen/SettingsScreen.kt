@@ -8,31 +8,43 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import org.lenatin.pulse.model.BottomTab
+import org.lenatin.pulse.state.PulseState
+import org.lenatin.pulse.state.rememberPulseState
+import org.lenatin.pulse.ui.components.PulseBottomBar
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsScreen(
     modifier: Modifier = Modifier,
-    onBackClick: () -> Unit = {}
+    state: PulseState = rememberPulseState(),
+    onNavigate: (BottomTab) -> Unit = {}
 ) {
     var notificationsEnabled by remember { mutableStateOf(true) }
     var soundEnabled by remember { mutableStateOf(true) }
     var darkModeEnabled by remember { mutableStateOf(false) }
+    var selectedTab by remember { mutableStateOf(state.selectedTab) }
 
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Settings", fontWeight = FontWeight.SemiBold) },
-                navigationIcon = {
-                    IconButton(onClick = onBackClick) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
-                    }
+                title = { Text("Settings", fontWeight = FontWeight.SemiBold) }
+            )
+        },
+        bottomBar = {
+            PulseBottomBar(
+                selectedTab = selectedTab,
+                onTabSelected = { tab ->
+                    selectedTab = tab
+                    state.selectedTab = tab
+                    onNavigate(tab)
                 }
             )
         }

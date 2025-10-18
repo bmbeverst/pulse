@@ -1,7 +1,11 @@
 package org.lenatin.pulse.state
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import org.lenatin.pulse.model.BottomTab
@@ -12,11 +16,12 @@ import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 
+
 data class PulseState(
     val date: LocalDate,
     val challenges: List<Challenge>,
     val workouts: SnapshotStateList<Workout>,
-    val selectedTab: BottomTab
+    var selectedTab: BottomTab
 )
 
 @Composable
@@ -30,10 +35,13 @@ fun rememberPulseState(): PulseState {
         )
     }
     val challenges = remember {
-        listOf(
+        mutableStateListOf(
             Challenge("c1", "100 Push-ups Week", 0.6f),
             Challenge("c2", "5 Runs in 7 Days", 0.4f)
         )
     }
-    return remember { PulseState(today, challenges, workouts, BottomTab.Activity) }
+    val selectedTab = remember {
+        mutableStateOf(BottomTab.Activity)
+    }
+    return remember { PulseState(today, challenges, workouts, selectedTab.value) }
 }

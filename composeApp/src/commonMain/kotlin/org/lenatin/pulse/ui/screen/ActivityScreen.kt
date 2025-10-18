@@ -29,7 +29,7 @@ import org.lenatin.pulse.util.today
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PulseHomeScreen(
+fun ActvityScreen(
     modifier: Modifier = Modifier,
     state: PulseState = rememberPulseState(),
     onEditCurrentWorkout: () -> Unit = {},
@@ -51,7 +51,6 @@ fun PulseHomeScreen(
 ) {
     var selectedTab by remember { mutableStateOf(state.selectedTab) }
     var currentDate by remember { mutableStateOf(state.date) }
-
 
     Scaffold(
         topBar = {
@@ -87,17 +86,54 @@ fun PulseHomeScreen(
             )
         }
     ) { padding ->
-        // Display screen based on selected item
-        Box(
-            contentAlignment = Alignment.Center
+        LazyColumn(
+            modifier = modifier
+                .fillMaxSize()
+                .padding(padding),
+            contentPadding = PaddingValues(16.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            when (selectedTab) {
-                BottomTab.Activity -> ActvityScreen()
-                BottomTab.Stats -> StatsScreen()
-                BottomTab.Settings -> SettingsScreen()
+            // Challenges section (if any)
+            if (state.challenges.isNotEmpty()) {
+                item { SectionHeader(title = "Challenges") }
+                item {
+                    LazyRow(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                        items(state.challenges) { challenge ->
+                            ChallengeCard(challenge)
+                        }
+                    }
+                }
             }
-        }
 
+            // Workouts list
+            item { SectionHeader(title = "Workouts") }
+            items(state.workouts, key = { it.id }) { w ->
+                SwipeableWorkoutRow(
+                    workout = w,
+                    onSwipe = { delta ->
+                        // Right swipe (+), left swipe (-)
+                        val change = if (delta > 0) 1 else -1
+                        w.doneReps = (w.doneReps + change).coerceIn(0, w.targetReps)
+                    }
+                )
+            }
+
+            // Add more button
+            item {
+                OutlinedButton(
+                    onClick = onAddWorkout,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Icon(Icons.Default.Add, null)
+                    Spacer(Modifier.width(8.dp))
+                    Text("Add more")
+                }
+            }
+
+            // Share weekly progress
+            item { SectionHeader(title = "Share progress (this week)") }
+            item { ShareRow(onShare) }
+        }
     }
 }
 
