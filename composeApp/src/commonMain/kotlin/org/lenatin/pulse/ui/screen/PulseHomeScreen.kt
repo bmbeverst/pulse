@@ -18,7 +18,6 @@ import org.lenatin.pulse.model.ShareTarget
 import org.lenatin.pulse.model.Workout
 import org.lenatin.pulse.state.PulseState
 import org.lenatin.pulse.state.rememberPulseState
-import org.lenatin.pulse.ui.components.*
 import org.lenatin.pulse.ui.components.ChallengeCard
 import org.lenatin.pulse.ui.components.DateSelectorBar
 import org.lenatin.pulse.ui.components.ShareRow
