@@ -26,7 +26,7 @@ internal fun ShareRow(onShare: (ShareTarget) -> Unit) {
 private fun ShareChip(label: String, icon: ImageVector, onClick: () -> Unit) {
     OutlinedButton(onClick = onClick, shape = RoundedCornerShape(12.dp)) {
         Icon(icon, null)
-        Spacer(Modifier.width(8.dp))
+        // Spacer(Modifier.width(8.dp))
         Text(label)
     }
 }
