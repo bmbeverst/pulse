@@ -1,13 +1,15 @@
 package org.lenatin.pulse.ui.components
 
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.FitnessCenter
+import androidx.compose.material.icons.filled.Insights
+import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
-import org.lenatin.pulse.model.BottomTab
-import androidx.compose.material.icons.Icons
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.material.icons.filled.*
+import org.lenatin.pulse.model.BottomTab
 
 @Composable
 fun PulseBottomBar(
