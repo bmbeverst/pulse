@@ -69,14 +69,7 @@ fun PulseHomeScreen(
                         TextButton(onClick = onEditCurrentWorkout) { Text("Edit") }
                     }
                 )
-                DateSelectorBar(
-                    date = currentDate,
-                    isToday = currentDate == today(),
-                    onPrev = { currentDate = currentDate.minus(1) },
-                    onNext = { currentDate = currentDate.plus(1) },
-                    onToday = { currentDate = today() }
-                )
-                HorizontalDivider()
+               
             }
         },
         bottomBar = {
