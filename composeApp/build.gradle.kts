@@ -8,6 +8,7 @@ plugins {
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.composeHotReload)
+    alias(libs.plugins.sqldelight)
 }
 
 kotlin {
@@ -26,7 +27,15 @@ kotlin {
             isStatic = true
         }
     }
-    
+
+    targets.configureEach {
+        compilations.configureEach {
+            compilerOptions.configure {
+                freeCompilerArgs.add("-Xexpect-actual-classes")
+            }
+        }
+    }
+
     jvm()
     
     js {
@@ -44,6 +53,7 @@ kotlin {
         androidMain.dependencies {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
+            implementation(libs.sqldelight.android)
         }
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -56,6 +66,7 @@ kotlin {
             implementation(libs.androidx.lifecycle.viewmodelCompose)
             implementation(libs.androidx.lifecycle.runtimeCompose)
             implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.6.1")
+            implementation(libs.sqldelight.coroutines)
 
         }
         commonTest.dependencies {
@@ -64,6 +75,16 @@ kotlin {
         jvmMain.dependencies {
             implementation(compose.desktop.currentOs)
             implementation(libs.kotlinx.coroutinesSwing)
+            implementation(libs.sqldelight.desktop)
+        }
+
+        nativeMain.dependencies {
+            implementation("app.cash.sqldelight:native-driver:2.1.0")
+        }
+
+        sourceSets.jsMain.dependencies {
+            implementation("app.cash.sqldelight:web-worker-driver:2.1.0")
+            implementation(devNpm("copy-webpack-plugin", "9.1.0"))
         }
     }
 }
@@ -107,6 +128,16 @@ compose.desktop {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
             packageName = "org.lenatin.pulse"
             packageVersion = "1.0.0"
+        }
+    }
+}
+
+
+sqldelight {
+    databases {
+        create("Database") {
+            packageName = "org.lenatin.pulse.shared.database"
+            generateAsync.set(true)
         }
     }
 }

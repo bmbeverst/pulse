@@ -1,0 +1,142 @@
+-- Workout Table CRUD
+CREATE TABLE Workout (
+  c_workout_wt TEXT NOT NULL PRIMARY KEY,
+  d_date_wt TEXT NOT NULL,
+  i_duration_minutes_wt INTEGER,
+  t_notes_wt TEXT,
+  b_achieve_wt INTEGER NOT NULL -- Boolean as INTEGER 0/1
+);
+
+insertWorkout:
+INSERT INTO Workout(c_workout_wt, d_date_wt, i_duration_minutes_wt, t_notes_wt, b_achieve_wt)
+VALUES (?, ?, ?, ?, ?);
+
+selectAllWorkouts:
+SELECT * FROM Workout;
+
+selectWorkoutById:
+SELECT * FROM Workout WHERE c_workout_wt = ?;
+
+updateWorkout:
+UPDATE Workout
+SET d_date_wt = :d_date_wt, i_duration_minutes_wt = :i_duration_minutes_wt, t_notes_wt = :t_notes_wt, b_achieve_wt = :b_achieve_wt
+WHERE c_workout_wt = :c_workout_wt;
+
+deleteWorkout:
+DELETE FROM Workout WHERE c_workout_wt = ?;
+
+-- Exercise Table CRUD
+CREATE TABLE Exercise (
+  c_exercise_et TEXT NOT NULL PRIMARY KEY,
+  t_name_et TEXT NOT NULL,
+  t_unit_type_et TEXT,
+  i_default_unit_value_et INTEGER,
+  t_category_et TEXT,
+  i_lifetime_et INTEGER NOT NULL,
+  i_best_et INTEGER NOT NULL,
+  c_best_et TEXT,
+  t_description_et TEXT,
+  i_reps_et INTEGER NOT NULL,
+  i_rest_et INTEGER NOT NULL,
+  t_days_et TEXT NOT NULL,
+  b_achieve_et INTEGER NOT NULL
+);
+
+insertExercise:
+INSERT INTO Exercise(c_exercise_et, t_name_et, t_unit_type_et, i_default_unit_value_et, t_category_et, i_lifetime_et, i_best_et, c_best_et, t_description_et, i_reps_et, i_rest_et, t_days_et, b_achieve_et)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+
+selectAllExercises:
+SELECT * FROM Exercise;
+
+selectExerciseById:
+SELECT * FROM Exercise WHERE c_exercise_et = ?;
+
+updateExercise:
+UPDATE Exercise
+SET t_name_et = :t_name_et,
+    t_unit_type_et = :t_unit_type_et,
+    i_default_unit_value_et = :i_default_unit_value_et,
+    t_category_et = :t_category_et,
+    i_lifetime_et = :i_lifetime_et,
+    i_best_et = :i_best_et,
+    c_best_et = :c_best_et,
+    t_description_et = :t_description_et,
+    i_reps_et = :i_reps_et,
+    i_rest_et = :i_rest_et,
+    t_days_et = :t_days_et,
+    b_achieve_et = :b_achieve_et
+WHERE c_exercise_et = :c_exercise_et;
+
+deleteExercise:
+DELETE FROM Exercise WHERE c_exercise_et = ?;
+
+-- WorkoutExecution Table CRUD
+CREATE TABLE WorkoutExecution (
+  c_workout_execution_wet TEXT NOT NULL PRIMARY KEY,
+  c_workout_wet TEXT NOT NULL,
+  c_exercise_wet TEXT NOT NULL,
+  i_order_index_wet INTEGER NOT NULL,
+  i_value_wet INTEGER,
+  d_recorded_at_wet TEXT NOT NULL,
+  FOREIGN KEY(c_workout_wet) REFERENCES Workout(c_workout_wt),
+  FOREIGN KEY(c_exercise_wet) REFERENCES Exercise(c_exercise_et)
+);
+
+insertWorkoutExecution:
+INSERT INTO WorkoutExecution(c_workout_execution_wet, c_workout_wet, c_exercise_wet, i_order_index_wet, i_value_wet, d_recorded_at_wet)
+VALUES (?, ?, ?, ?, ?, ?);
+
+selectAllWorkoutExecutions:
+SELECT * FROM WorkoutExecution;
+
+selectWorkoutExecutionById:
+SELECT * FROM WorkoutExecution WHERE c_workout_execution_wet = ?;
+
+updateWorkoutExecution:
+UPDATE WorkoutExecution
+SET c_workout_wet = :c_workout_wet,
+    c_exercise_wet = :c_exercise_wet,
+    i_order_index_wet = :i_order_index_wet,
+    i_value_wet = :i_value_wet,
+    d_recorded_at_wet = :d_recorded_at_wet
+WHERE c_workout_execution_wet = :c_workout_execution_wet;
+
+deleteWorkoutExecution:
+DELETE FROM WorkoutExecution WHERE c_workout_execution_wet = ?;
+
+-- WorkoutSet Table CRUD
+CREATE TABLE WorkoutSet (
+  c_workout_set_id_wst TEXT NOT NULL PRIMARY KEY,
+  c_workout_execution_id_wst TEXT NOT NULL,
+  i_set_number_wst INTEGER NOT NULL,
+  i_reps_wst INTEGER NOT NULL,
+  i_weight_wst INTEGER,
+  i_duration_seconds_wst INTEGER,
+  i_rest_seconds_wst INTEGER,
+  FOREIGN KEY(c_workout_execution_id_wst) REFERENCES WorkoutExecution(c_workout_execution_wet)
+);
+
+insertWorkoutSet:
+INSERT INTO WorkoutSet(c_workout_set_id_wst, c_workout_execution_id_wst, i_set_number_wst,
+                       i_reps_wst, i_weight_wst, i_duration_seconds_wst, i_rest_seconds_wst)
+VALUES (?, ?, ?, ?, ?, ?, ?);
+
+selectAllWorkoutSets:
+SELECT * FROM WorkoutSet;
+
+selectWorkoutSetById:
+SELECT * FROM WorkoutSet WHERE c_workout_set_id_wst = ?;
+
+updateWorkoutSet:
+UPDATE WorkoutSet
+SET c_workout_execution_id_wst = :c_workout_execution_id_wst,
+    i_set_number_wst = :i_set_number_wst,
+    i_reps_wst = :i_reps_wst,
+    i_weight_wst = :i_weight_wst,
+    i_duration_seconds_wst = :i_duration_seconds_wst,
+    i_rest_seconds_wst = :i_rest_seconds_wst
+WHERE c_workout_set_id_wst = :c_workout_set_id_wst;
+
+deleteWorkoutSet:
+DELETE FROM WorkoutSet WHERE c_workout_set_id_wst = ?;
