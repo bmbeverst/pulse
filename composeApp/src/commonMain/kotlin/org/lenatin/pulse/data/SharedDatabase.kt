@@ -2,7 +2,7 @@ package org.lenatin.pulse.data
 
 import org.lenatin.pulse.shared.database.Database
 
-class SharedDatabase(private val databaseDriverFactory: DatabaseDriverFactory, ) {
+open class SharedDatabase(private val databaseDriverFactory: DatabaseDriverFactory, ) {
     private var database: Database? = null
 
     private suspend fun initDatabase() {

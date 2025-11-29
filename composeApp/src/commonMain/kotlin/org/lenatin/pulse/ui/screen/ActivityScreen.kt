@@ -32,9 +32,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import org.lenatin.pulse.data.SharedDatabase
+import org.lenatin.pulse.data.SharedDatabaseDaoImpl
 import org.lenatin.pulse.model.BottomTab
 import org.lenatin.pulse.model.ShareTarget
-import org.lenatin.pulse.model.Workout
 import org.lenatin.pulse.state.PulseState
 import org.lenatin.pulse.state.rememberPulseState
 import org.lenatin.pulse.ui.components.ChallengeCard
@@ -45,31 +46,44 @@ import org.lenatin.pulse.ui.components.SwipeableWorkoutRow
 import org.lenatin.pulse.util.minus
 import org.lenatin.pulse.util.plus
 import org.lenatin.pulse.util.today
+import androidx.compose.runtime.rememberCoroutineScope // Add this import
+import kotlinx.coroutines.launch // Add this import
+import org.lenatin.pulse.shared.database.Workout
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ActvityScreen(
     modifier: Modifier = Modifier,
-    state: PulseState = rememberPulseState(),
+    sharedDatabase: SharedDatabase,
     onEditCurrentWorkout: () -> Unit = {},
-    onAddWorkout: () -> Unit = {
-        state.workouts.add(
-            Workout(
-                id = "w" + (state.workouts.size + 1),
-                name = "New Exercise",
-                targetReps = 20,
-                doneReps = 0
-            )
-        )
-    },
+
     onShare: (ShareTarget) -> Unit = { target ->
         // TODO: wire up to platform share
         println("Share weekly progress via $target")
     },
     onNavigate: (BottomTab) -> Unit = {},
 ) {
+
+    val dao = remember { SharedDatabaseDaoImpl(sharedDatabase) }
+    val state = rememberPulseState(dao) // Create state here, not in parameters
+    val coroutineScope = rememberCoroutineScope() // ✅ Called in @Composable context
+
+
     var selectedTab by remember { mutableStateOf(state.selectedTab) }
     var currentDate by remember { mutableStateOf(state.date) }
+
+    val onAddWorkout: () -> Unit = {
+        coroutineScope.launch {
+            val newWorkout = Workout(
+                c_workout_wt = "1",
+                d_date_wt = "Test",
+                i_duration_minutes_wt = 1,
+                t_notes_wt = "Notes",
+                b_achieve_wt = 0
+            )
+            dao.insertWorkout(newWorkout)
+        }
+    }
 
     Scaffold(
         topBar = {

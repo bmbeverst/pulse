@@ -13,7 +13,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Article
+import androidx.compose.material.icons.automirrored.filled.Article
+import androidx.compose.material.icons.automirrored.filled.VolumeUp
 import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material.icons.filled.CloudUpload
 import androidx.compose.material.icons.filled.DarkMode
@@ -22,7 +23,6 @@ import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Policy
 import androidx.compose.material.icons.filled.Security
-import androidx.compose.material.icons.filled.VolumeUp
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -42,6 +42,8 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import org.lenatin.pulse.data.SharedDatabase
+import org.lenatin.pulse.data.SharedDatabaseDaoImpl
 import org.lenatin.pulse.model.BottomTab
 import org.lenatin.pulse.state.PulseState
 import org.lenatin.pulse.state.rememberPulseState
@@ -51,9 +53,13 @@ import org.lenatin.pulse.ui.components.PulseBottomBar
 @Composable
 fun SettingsScreen(
     modifier: Modifier = Modifier,
-    state: PulseState = rememberPulseState(),
+    sharedDatabase: SharedDatabase,
     onNavigate: (BottomTab) -> Unit = {}
 ) {
+
+    val dao = remember { SharedDatabaseDaoImpl(sharedDatabase) }
+    val state = rememberPulseState(dao) // Create state here, not in parameters
+
     var notificationsEnabled by remember { mutableStateOf(true) }
     var soundEnabled by remember { mutableStateOf(true) }
     var darkModeEnabled by remember { mutableStateOf(false) }
@@ -124,7 +130,7 @@ fun SettingsScreen(
             }
             item {
                 SettingsSwitchItem(
-                    icon = Icons.Default.VolumeUp,
+                    icon = Icons.AutoMirrored.Filled.VolumeUp,
                     title = "Sound",
                     subtitle = "Enable sound effects",
                     checked = soundEnabled,
@@ -190,7 +196,7 @@ fun SettingsScreen(
             }
             item {
                 SettingsItem(
-                    icon = Icons.Default.Article,
+                    icon =  Icons.AutoMirrored.Filled.Article,
                     title = "Terms & Conditions",
                     subtitle = "View terms of service",
                     onClick = { /* TODO */ }

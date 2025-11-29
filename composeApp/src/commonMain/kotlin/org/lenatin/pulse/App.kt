@@ -2,6 +2,8 @@ package org.lenatin.pulse
 
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import org.lenatin.pulse.data.DatabaseDriverFactory
+import org.lenatin.pulse.data.SharedDatabase
 import org.lenatin.pulse.ui.screen.PulseHomeScreen
 
 /**
@@ -9,8 +11,8 @@ import org.lenatin.pulse.ui.screen.PulseHomeScreen
  * This composable sets up the Material Theme and displays the home screen.
  */
 @Composable
-fun App() {
+fun App(databaseDriverFactory: DatabaseDriverFactory) {
     MaterialTheme {
-        PulseHomeScreen()
+        PulseHomeScreen(sharedDatabase=SharedDatabase(databaseDriverFactory))
     }
 }

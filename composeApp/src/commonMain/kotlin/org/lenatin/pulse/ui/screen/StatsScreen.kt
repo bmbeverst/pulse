@@ -40,6 +40,8 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import org.lenatin.pulse.data.SharedDatabase
+import org.lenatin.pulse.data.SharedDatabaseDaoImpl
 import org.lenatin.pulse.model.BottomTab
 import org.lenatin.pulse.state.PulseState
 import org.lenatin.pulse.state.rememberPulseState
@@ -62,9 +64,14 @@ data class ChartDataPoint(
 @Composable
 fun StatsScreen(
     modifier: Modifier = Modifier,
-    state: PulseState = rememberPulseState(),
+    sharedDatabase: SharedDatabase,
     onNavigate: (BottomTab) -> Unit = {}
 ) {
+
+
+    val dao = remember { SharedDatabaseDaoImpl(sharedDatabase) }
+    val state = rememberPulseState(dao) // Create state here, not in parameters
+
     var selectedPeriod by remember { mutableStateOf(TimePeriod.Week) }
 
     val workoutStats = remember {

@@ -50,11 +50,6 @@ kotlin {
     }
     
     sourceSets {
-        androidMain.dependencies {
-            implementation(compose.preview)
-            implementation(libs.androidx.activity.compose)
-            implementation(libs.sqldelight.android)
-        }
         commonMain.dependencies {
             implementation(compose.runtime)
             implementation(compose.foundation)
@@ -67,6 +62,7 @@ kotlin {
             implementation(libs.androidx.lifecycle.runtimeCompose)
             implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.6.1")
             implementation(libs.sqldelight.coroutines)
+            implementation(libs.sqldelight.runtime)
 
         }
         commonTest.dependencies {
@@ -75,15 +71,26 @@ kotlin {
         jvmMain.dependencies {
             implementation(compose.desktop.currentOs)
             implementation(libs.kotlinx.coroutinesSwing)
-            implementation(libs.sqldelight.desktop)
+            implementation(libs.sqlite.driver)
+        }
+
+        iosMain.dependencies {
+            implementation(libs.native.driver)
+        }
+
+        androidMain.dependencies {
+            implementation(compose.preview)
+            implementation(libs.androidx.activity.compose)
+            implementation(libs.android.driver)
         }
 
         nativeMain.dependencies {
-            implementation("app.cash.sqldelight:native-driver:2.1.0")
+            implementation(libs.native.driver)
         }
 
         sourceSets.jsMain.dependencies {
-            implementation("app.cash.sqldelight:web-worker-driver:2.1.0")
+            implementation(libs.web.worker.driver)
+            implementation (npm("sql.js", "1.6.2"))
             implementation(devNpm("copy-webpack-plugin", "9.1.0"))
         }
     }

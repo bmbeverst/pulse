@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -19,41 +18,28 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
+import org.lenatin.pulse.data.SharedDatabase
+import org.lenatin.pulse.data.SharedDatabaseDaoImpl
 import org.lenatin.pulse.model.BottomTab
-import org.lenatin.pulse.model.ShareTarget
-import org.lenatin.pulse.model.Workout
 import org.lenatin.pulse.state.PulseState
 import org.lenatin.pulse.state.rememberPulseState
-import org.lenatin.pulse.ui.components.DateSelectorBar
 import org.lenatin.pulse.ui.components.PulseBottomBar
-import org.lenatin.pulse.util.minus
-import org.lenatin.pulse.util.plus
-import org.lenatin.pulse.util.today
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
+
 fun PulseHomeScreen(
     modifier: Modifier = Modifier,
-    state: PulseState = rememberPulseState(),
+    sharedDatabase: SharedDatabase,
     onEditCurrentWorkout: () -> Unit = {},
-    onAddWorkout: () -> Unit = {
-        state.workouts.add(
-            Workout(
-                id = "w" + (state.workouts.size + 1),
-                name = "New Exercise",
-                targetReps = 20,
-                doneReps = 0
-            )
-        )
-    },
-    onShare: (ShareTarget) -> Unit = { target ->
-        // TODO: wire up to platform share
-        println("Share weekly progress via $target")
-    },
     onNavigate: (BottomTab) -> Unit = {},
 ) {
+    val dao = remember { SharedDatabaseDaoImpl(sharedDatabase) }
+    val state = rememberPulseState(dao) // Create state here, not in parameters
+
     var selectedTab by remember { mutableStateOf(state.selectedTab) }
     var currentDate by remember { mutableStateOf(state.date) }
+
 
 
     Scaffold(
@@ -88,9 +74,9 @@ fun PulseHomeScreen(
             contentAlignment = Alignment.Center
         ) {
             when (selectedTab) {
-                BottomTab.Activity -> ActvityScreen()
-                BottomTab.Stats -> StatsScreen()
-                BottomTab.Settings -> SettingsScreen()
+                BottomTab.Activity -> ActvityScreen(sharedDatabase=sharedDatabase)
+                BottomTab.Stats -> StatsScreen(sharedDatabase=sharedDatabase)
+                BottomTab.Settings -> SettingsScreen(sharedDatabase=sharedDatabase)
             }
         }
 
